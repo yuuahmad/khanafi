@@ -1,8 +1,9 @@
 #include <Arduino.h>
 #include <LiquidCrystal_I2C.h>
 LiquidCrystal_I2C lcd(0x27, 16, 2);
-int GAS_SENSOR_LOW = 3;
+int GAS_SENSOR_LOW = A0;
 int Buzzer = 6;
+int nilaialkohol = 0;
 
 void beep(unsigned char delayms)
 {                          //creating function
@@ -15,7 +16,6 @@ void beep(unsigned char delayms)
 void setup()
 {
   // put your setup code here, to run once:
-  pinMode(GAS_SENSOR_LOW, INPUT_PULLUP);
   pinMode(Buzzer, OUTPUT);
 
   lcd.init(); // initialize the lcd
@@ -32,19 +32,22 @@ void setup()
 void loop()
 {
   lcd.setCursor(0, 0);
-  lcd.print("KONDISI :     ");
+  lcd.print("nilai Alkohol :");
   // put your main code here, to run repeatedly:
-  int GAS_SENSOR_LOW_READ = digitalRead(GAS_SENSOR_LOW);
-  if (GAS_SENSOR_LOW_READ == LOW)
+  nilaialkohol = analogRead(GAS_SENSOR_LOW);
+  nilaialkohol = map(nilaialkohol, 410, 510, 0, 100);
+  if (nilaialkohol == LOW)
   {
     lcd.setCursor(0, 1);
-    lcd.print("ALKOHOL DETEC  ");
+    lcd.print(nilaialkohol);
+    lcd.print(" %   ");
     beep(50); //Beep
   }
   else
   {
     lcd.setCursor(0, 1);
-    lcd.print("ALKOHOL HILANG ");
+    lcd.print(nilaialkohol);
+    lcd.print(" %   ");
   }
   delay(200);
 }
